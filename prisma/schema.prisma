@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String
+  // Each team has one manager.
+  managerId String
+  manager   User     @relation("ManagedTeams", fields: [managerId], references: [id])
+  // A team can have many members.
+  members   User[]   @relation("TeamMembers")
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  username     String        @unique
+  password     String
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  // For team assignment:
+  teamId       String?
+  team         Team?         @relation("TeamMembers", fields: [teamId], references: [id])
+  // For admins: the teams they manage:
+  managedTeams Team[]        @relation("ManagedTeams")
+  laborEntries Labor[]
+  repairOrders RepairOrder[]
+}
+
+model RepairOrder {
+  id        String   @id @default(uuid())
+  year      String
+  make      String
+  model     String
+  roNumber  String
+  labor     Float
+  createdAt DateTime @default(now())
+  // Each repair order is linked to a user.
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Labor {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  date        DateTime @default(now())
+  hoursWorked Float
+  efficiency  Float
+}
+
+enum Role {
+  USER
+  ADMIN
+}
