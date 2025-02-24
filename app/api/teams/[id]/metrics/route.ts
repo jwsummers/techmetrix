@@ -2,20 +2,20 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '@/app/lib/auth';
 
 const prisma = new PrismaClient();
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, context: unknown) {
+  const { params } = context as { params: { id: string } };
+
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  // Await the params before destructuring:
-  const { id: teamId } = await Promise.resolve(params);
+  
+  // No need to await params here; destructure directly:
+  const { id: teamId } = params;
   
   try {
     // Ensure the team belongs to the current admin
@@ -57,3 +57,4 @@ export async function GET(
     return NextResponse.json({ error: 'Failed to fetch team metrics' }, { status: 500 });
   }
 }
+
