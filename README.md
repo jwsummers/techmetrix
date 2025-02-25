@@ -153,8 +153,8 @@ npx prisma migrate deploy
 
 **TechMetrix** is built by **Jason Summers** and is actively maintained as an open-source project.
 
-📌 **GitHub**: [github.com/your-repo](https://github.com/your-repo)  
-📌 **Website**: [techmetrix.com](https://techmetrix.com)
+📌 **GitHub**: [github.com/your-repo](https://github.com/jwsummers/techmetrix)  
+📌 **Website**: [techmetrix.com](https://techmetrix.vercel.app/)
 
 ---
 
